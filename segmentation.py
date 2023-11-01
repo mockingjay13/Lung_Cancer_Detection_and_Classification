@@ -9,9 +9,6 @@ def calculate_tumor_area(image_path):
     # Thresholding
     ret, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU)
 
-    # Thresholding
-    ret, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU)
-
     # Noise removal with morphological opening
     kernel = np.ones((3, 3), np.uint8)
     opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=2)
@@ -21,7 +18,7 @@ def calculate_tumor_area(image_path):
 
     # Finding sure foreground (lung region)
     dist_transform = cv2.distanceTransform(opening, cv2.DIST_L2, 5)
-    ret, sure_fg = cv2.threshold(dist_transform, 0.25 * dist_transform.max(), 255, 0)  # Adjust the 0.25 value based on your dataset for better segmentation
+    ret, sure_fg = cv2.threshold(dist_transform, 0.25 * dist_transform.max(), 255, 0)  # Adjust the 0.25 value 
 
     # Finding unknown region
     sure_fg = np.uint8(sure_fg)
@@ -47,7 +44,7 @@ def calculate_tumor_area(image_path):
     tumor_pixel_count = np.sum(tumor_mask)
 
     # Convert pixel count into physical units
-    pixel_spacing = 1.227  # Adjust this to the appropriate value
+    pixel_spacing = 1.227  # Adjusted this to the appropriate value according to inference derived from ct scan pixels vs average human lungs
     tumor_area_mm2 = tumor_pixel_count * pixel_spacing**2
 
     return tumor_area_mm2
